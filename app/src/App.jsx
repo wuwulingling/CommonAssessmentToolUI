@@ -6,11 +6,15 @@ import ResultPage from "./components/ResultPage";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import "./App.css";
+import Home from "./components/Home";
+
 
 function App() {
+
   return (
     <Router>
       <div className="App">
+        <Home />
         <Navbar />
         <main>
           <Routes>
