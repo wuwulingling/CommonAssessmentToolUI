@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import {
   Typography,
   Button,
@@ -62,7 +62,7 @@ const ResultPage = () => {
             Probability of Return to Work:
           </Typography>
           <Typography variant="h4" color="primary" sx={{ fontWeight: "bold" }}>
-            {probability.toFixed(2)}%
+            {probability.toFixed(1)}%
           </Typography>
         </Box>
 
@@ -73,19 +73,30 @@ const ResultPage = () => {
           <List>
             {interventions.map((intervention, index) => {
               const formatted = formatIntervention(intervention);
+              // Normalize the intervention name for the URL
+              const interventionKey = formatted.types.replace(/[\s,]/g, '-').toLowerCase();
               return (
                 <ListItem key={index}>
                   <ListItemText
-                    primaryTypographyProps={{ variant: "body1" }}
+                    primaryTypographyProps={{ variant: 'body1' }}
                     primary={
                       <>
-                        {formatted.types}:{" "}
+                        {index + 1}. {formatted.types}:{' '}
                         <Typography
                           component="span"
-                          sx={{ fontWeight: "bold", color: "primary.main" }}
+                          sx={{ fontWeight: 'bold', color: 'primary.main' }}
                         >
                           {formatted.percentage}
-                        </Typography>
+                        </Typography>{' '}
+                        <Button
+                          component={Link}
+                          to={`/interventions/${interventionKey}`}
+                          variant="outlined"
+                          size="small"
+                          sx={{ ml: 2 }}
+                        >
+                          View Details
+                        </Button>
                       </>
                     }
                   />
