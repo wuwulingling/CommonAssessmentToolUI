@@ -163,16 +163,33 @@ app.put('/api/update-user/:id', (req, res) => {
 
 // API: placeholder api for back to work score calculation
 app.post('/api/work-score', (req, res) => {
-  const userData = req.body;
-
   let score = 20; // base line score
+
+  // give the fields default values if they are undefined
+  const userData = {
+    work_experience: req.body.work_experience ?? 0,
+    canada_workex: req.body.canada_workex ?? 0,
+    age: req.body.age,
+    reading_english_scale: req.body.reading_english_scale ?? 0,
+    speaking_english_scale: req.body.speaking_english_scale ?? 0,
+    writing_english_scale: req.body.writing_english_scale ?? 0,
+    numeracy_scale: req.body.numeracy_scale ?? 0,
+    computer_scale: req.body.computer_scale ?? 0,
+    felony_bool: req.body.felony_bool ?? 'false',
+    substance_use: req.body.substance_use ?? 'false',
+    need_mental_health_support_bool: req.body.need_mental_health_support_bool ?? 'false',
+    transportation_bool: req.body.transportation_bool ?? 'false',
+    currently_employed: req.body.currently_employed ?? 'false',
+  };
 
   score += Math.min(userData.work_experience, 10);
   score += Math.min(userData.canada_workex, 5);
 
   if (userData.age >= 18 && userData.age <= 35) {
     score += 5;
-  } else if (userData.age <= 50) { score += 3; }
+  } else if (userData.age <= 50) {
+    score += 3;
+  }
 
   score += Math.min(userData.reading_english_scale, 10);
   score += Math.min(userData.speaking_english_scale, 10);
@@ -189,15 +206,15 @@ app.post('/api/work-score', (req, res) => {
   if (userData.transportation_bool === 'true') { score += 2; }
   if (userData.currently_employed === 'true') { score += 5; }
 
-    score = Math.max(score, 0);
-    score = Math.min(score, 100);
+  score = Math.max(score, 0);
+  score = Math.min(score, 100);
 
   res.json({
     baseline: score,
     interventions: [
-      [8.5, ['Job training will increase']],
-      [6.3, ['Counseling will increase']],
-      [5.0, ['Mentorship programs will increase']],
+      [8.5, ['Job training']],
+      [6.3, ['Counseling']],
+      [5.0, ['Mentorship programs']],
     ],
   });
 });
