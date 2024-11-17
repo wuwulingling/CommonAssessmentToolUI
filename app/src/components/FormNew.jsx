@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+
+
 import {
   Typography,
   Grid,
@@ -15,10 +17,13 @@ import {
 } from "@mui/material";
 import styles from "./Form.module.css";
 
+
 const FormNew = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
     age: 0,
     gender: "",
     work_experience: 0,
@@ -45,12 +50,21 @@ const FormNew = () => {
     need_mental_health_support_bool: "false",
   });
 
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    age: "",
+  });
+
   useEffect(() => {
     // If there's form data in the location state, use it to initialize the form
     if (location.state && location.state.formData) {
       setFormData(location.state.formData);
     }
   }, [location.state]);
+
+  // State to hold the entries
+  const [entries, setEntries] = useState([]); // Ensure this is defined
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -60,28 +74,83 @@ const FormNew = () => {
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First Name is required.";
+      isValid = false;
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last Name is required.";
+      isValid = false;
+    }
+
+    if (formData.age <= 0) {
+      newErrors.age = "Age is required.";
+      isValid = false;
+    }
+
+    if (!Number.isInteger(Number(formData.age))) {
+      newErrors.age = "Age must be a valid number.";
+      isValid = false;
+    }
+
+    if ((formData.age > 0 && formData.age < 18) || formData.age > 66) {
+      newErrors.age = "Age must be between 18 and 65.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Prevent form submission if validation fails
     try {
-      // TODO: change url to use an env variable to make it easier to change when deploying in different environments
-      const response = await axios.post(
-        "http://ec2-34-219-155-200.us-west-2.compute.amazonaws.com:8000/clients/predictions",
-        formData
-      );
-      console.log(response);
-      console.log(response.data);
-
+      await handleAdd();
+    // TODO: change url to use an env variable to make it easier to change when deploying in different environments
+    //   const response = await axios.post(
+    //     "http://ec2-34-219-155-200.us-west-2.compute.amazonaws.com:8000/clients/predictions",
+    //     formData
+    //   );
+      const response = await axios.post('http://localhost:3001/api/work-score', formData);
       const probability = response.data.baseline;
 
       const interventions = response.data.interventions;
-      navigate("/results", { state: { formData, probability, interventions } });
+      navigate("/results", { state: {formData, probability, interventions } });
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
+
+  const handleAdd = async () => {
+    try {
+      // Send formData to the backend at the new endpoint
+      const response = await axios.post(
+        "http://localhost:3001/api/submit-form", // Update the URL as needed
+        formData
+      );
+
+      // Assuming the response contains the newly added submission or confirmation
+      console.log(response.data);
+
+      // Update the entries state with the new submission
+      setEntries((prevEntries) => [...prevEntries, response.data.submission]);
+      handleClearForm(); // Optionally clear the form after adding
+    } catch (error) {
+      console.error("Error adding entry:", error);
+    }
+  };
+
   const handleClearForm = () => {
     setFormData({
+      firstName: "",
+      lastName: "",
       age: 0,
       gender: "",
       work_experience: 0,
@@ -121,6 +190,32 @@ const FormNew = () => {
           Candidate Form
         </Typography>
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="First Name"
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              error={!!errors.firstName}
+              helperText={errors.firstName}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Last Name"
+              type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              error={!!errors.lastName}
+              helperText={errors.lastName}
+            />
+          </Grid>
           <Grid item xs={12} sm={3}>
             <TextField
               label="Age"
@@ -130,7 +225,9 @@ const FormNew = () => {
               onChange={handleChange}
               variant="outlined"
               fullWidth
-              InputProps={{ inputProps: { min: 18, max: 65 } }}
+              //InputProps={{ inputProps: { min: 18, max: 65 } }}
+              error={!!errors.age}
+              helperText={errors.age}
             />
           </Grid>
           <Grid item xs={12} sm={3}>

@@ -5,7 +5,12 @@ import FormNew from "./components/FormNew";
 import ResultPage from "./components/ResultPage";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
+import ClientSearch from "./components/ClientSearch";
+import DetailPage from "./components/DetailPage";
+
 import "./App.css";
+
+
 
 function App() {
   return (
@@ -17,6 +22,8 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/form" element={<FormNew />} />
             <Route path="/results" element={<ResultPage />} />
+            <Route path="/clients" element={<ClientSearch />} />
+            <Route path="/client/:id" element={<DetailPage />} />
           </Routes>
         </main>
         <Footer />
