@@ -54,7 +54,7 @@ const ResultPage = () => {
     <Box sx={{ p: 4, maxWidth: 800, margin: "0 auto" }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h3" gutterBottom align="center" sx={{ mb: 6 }}>
-          Return to Work Assessment Results
+          Return to Work Assessment Result
         </Typography>
 
         <Box sx={{ mb: 4 }}>

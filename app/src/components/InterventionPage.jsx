@@ -1,9 +1,10 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Paper } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Box, Typography, Paper, Button } from '@mui/material';
 
 const InterventionPage = () => {
   const { interventionKey } = useParams(); // Extract the dynamic path parameter
+  const navigate = useNavigate();
 
   // Revert "-" back to spaces and capitalize each word
   const interventionName = interventionKey
@@ -16,19 +17,19 @@ const InterventionPage = () => {
         elevation={3}
         sx={{ p: 4 }}
       >
-        <Typography
-          variant="h3"
-          gutterBottom
-          align="center"
-        >
+        <Typography variant="h3" gutterBottom align="center">
           {interventionName}
         </Typography>
-        <Typography
-          variant="body1"
-          align="center"
-        >
+        <Typography variant="body1" align="center" >
           This is a dummy page for the {interventionName} intervention.
         </Typography>
+        <Box textAlign="center" sx={ { mt: 4 } }>
+          <Button variant="outlined" color="primary"
+            onClick={() => navigate(-1)} // Navigate back to the previous page
+          >
+            Back to your result
+          </Button>
+        </Box>
       </Paper>
     </Box>
   );
