@@ -43,7 +43,7 @@ const ResultPage = () => {
   return (
     <Box sx={{ p: 4, maxWidth: 1000, margin: '0 auto' }}>
       <Paper elevation={3} sx={{ p: 4 }}>
-        <Typography variant="h3" gutterBottom sx={{ mb: 4 }}>
+        <Typography variant="h3" gutterBottom sx={{ mb: 4, fontFamily: "'Open Sans', sans-serif", fontWeight: 500, color: '#2c3e50' }}>
           Assessment Result
         </Typography>
 
@@ -80,7 +80,7 @@ const ResultPage = () => {
 
         {/* Recommended Interventions */}
         <Box sx={{ mb: 4, p: 3 }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+          <Typography variant="h5" sx={{ mb: 2, color: '#2c3e50' }}>
             Recommended Interventions
           </Typography>
           <Grid container spacing={3}>
@@ -101,7 +101,7 @@ const ResultPage = () => {
                     }}
                   >
                     <CardContent>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                      <Typography variant="h6" sx={{ color: '#2c3e50', fontWeight: 'bold', mb: 1 }}>
                         {formatted.types}
                       </Typography>
                       <Typography variant="h6" component="span" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
