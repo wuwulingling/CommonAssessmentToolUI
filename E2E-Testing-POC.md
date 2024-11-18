@@ -104,7 +104,7 @@ Add JSON fixtures for mock data in the cypress/fixtures directory:
   
   <img width="1724" alt="image" src="https://github.com/user-attachments/assets/daab71df-b2cc-407d-a424-13f4ede6c24b">
 
-- Click on ```ClientSearch.cy.js```. Then we run the tests in that file and see logs and output and other details like this:
+- Click on ```clientSearch.cy.js```. Then we run the tests in that file and see logs and output and other details like this:
 
   <img width="1728" alt="image" src="https://github.com/user-attachments/assets/327b9ab4-b44b-48be-a443-662850a50ba7">
 
