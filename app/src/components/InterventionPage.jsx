@@ -13,18 +13,17 @@ const InterventionPage = () => {
 
   return (
     <Box sx={{ p: 4, maxWidth: 800, margin: '0 auto' }}>
-      <Paper
-        elevation={3}
-        sx={{ p: 4 }}
-      >
-        <Typography variant="h3" gutterBottom align="center">
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h3" gutterBottom align="center" sx={{ fontFamily: "'Open Sans', sans-serif", fontWeight: 500, color: '#2c3e50' }}>
           {interventionName}
         </Typography>
-        <Typography variant="body1" align="center" >
+        <Typography variant="body1" align="center">
           This is a dummy page for the {interventionName} intervention.
         </Typography>
-        <Box textAlign="center" sx={ { mt: 4 } }>
-          <Button variant="outlined" color="primary"
+        <Box textAlign="center" sx={{ mt: 4 }}>
+          <Button
+            variant="outlined"
+            color="primary"
             onClick={() => navigate(-1)} // Navigate back to the previous page
           >
             Back to your result
