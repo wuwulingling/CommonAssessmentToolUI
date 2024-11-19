@@ -3,6 +3,9 @@ import { saveAs } from 'file-saver';
 
 // Function to generate and save PDF report
 export const generatePDFReport = (formData, probability, interventions) => {
+  console.log(formData);
+  console.log(probability);
+  console.log(interventions);
   const doc = new jsPDF();
   let yPos = 20;
 
@@ -24,7 +27,7 @@ export const generatePDFReport = (formData, probability, interventions) => {
 
   // Add probability
   doc.setFontSize(16);
-  doc.text(`Probability of Return to Work: ${(probability * 100).toFixed(2)}%`, 20, yPos);
+  doc.text(`Probability of Return to Work: ${(probability).toFixed(2)}%`, 20, yPos);
   yPos += 20;
 
   // Add interventions
