@@ -1,16 +1,36 @@
-name: test-cicd-pipeline
-run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push]
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  check-bats-version:
-    runs-on: macos
+  build:
+    runs-on: macos-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - run: npm install -g bats
-      - run: |
-          bats --version
-          # Optionally check if bats was installed correctly
-          which bats
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # # Run tests
+      # - name: Run tests
+      #   run: npm test
+
+      # Optionally, you can run a lint check
+      - name: Lint code
+        run: npm run lint
