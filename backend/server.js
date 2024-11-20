@@ -219,7 +219,7 @@ app.post('/api/work-score', (req, res) => {
   });
 });
 
-// API: delete user info
+// API: delete user info for test
 app.delete('/api/delete-user/:id', (req, res) => {
   const userId = req.params.id;
 
