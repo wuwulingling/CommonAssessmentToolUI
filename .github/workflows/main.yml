@@ -10,4 +10,7 @@ jobs:
         with:
           node-version: '16'
       - run: npm install -g bats
-      - run: bats -v
+      - run: |
+          bats --version
+          # Optionally check if bats was installed correctly
+          which bats
