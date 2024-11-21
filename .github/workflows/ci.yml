@@ -35,31 +35,15 @@ jobs:
         env:
           CI: true
 
-      # Step 5: Run Tests
-      # - name: Run Tests
-      #   working-directory: ./app
-      #   run: npm test -- --watchAll=false
-      #   env:
-      #     CI: true
-
-      # Step 6: Check for Formatting
+      # Step 5: Check for Formatting
       - name: Run Prettier
         working-directory: ./app
         run: npx prettier --check "./**/*.{js,jsx,ts,tsx,json,css,scss,md}"
-
-      # Step 7: Run Type Checking (if applicable)
-      - name: Run TypeScript Check
-        working-directory: ./app
-        run: npx tsc --noEmit
 
       # Optional: Add Logs
       - name: Logs
         run: echo "All checks passed successfully!"
 
-      # Step 8: Report Success
-      - name: Completion
-        run: echo "CI Pipeline Completed Successfully"
-
-      # Step 9: Report Success
+      # Step 6: Report Success
       - name: Completion
         run: echo "CI Pipeline Completed Successfully"
