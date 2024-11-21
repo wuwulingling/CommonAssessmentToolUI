@@ -14,10 +14,6 @@ function LandingPage() {
     // Placeholder for file upload functionality
     console.log("File upload functionality to be implemented");
   };
-  
-  const handleUserList = () => {
-    navigate("/list");
-  };
 
   return (
     <Box
@@ -48,7 +44,7 @@ function LandingPage() {
           gutterBottom
           sx={{
             mb: 3,
-            fontFamily: "'Open Sans', sans-serif",
+            fontFamily: "&apos;Open Sans&apos;, sans-serif",
             fontWeight: 500,
             color: "#2c3e50",
           }}
@@ -61,13 +57,13 @@ function LandingPage() {
           gutterBottom
           sx={{
             mb: 6,
-            fontFamily: "'Open Sans', sans-serif",
+            fontFamily: "&apos;Open Sans&apos;, sans-serif",
             fontWeight: 400,
             color: "#34495e",
           }}
         >
-          Learn more about the candidate's employment potential and intervention
-          recommendations
+          Learn more about the candidate&apos;s employment potential and
+          intervention recommendations
         </Typography>
         <Stack direction="row" spacing={4} justifyContent="center">
           <Button

@@ -1,6 +1,15 @@
 // Recommendations.js
-import React from 'react';
-import { Card, CardContent, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import React from "react";
+import PropTypes from "prop-types";
+import {
+  Card,
+  CardContent,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+} from "@mui/material";
 
 function Recommendations({ recommendations }) {
   return (
@@ -10,18 +19,29 @@ function Recommendations({ recommendations }) {
           Recommended Interventions
         </Typography>
         <List>
-          {recommendations.map((item, index) => (
-            <React.Fragment key={index}>
-              <ListItem>
-                <ListItemText primary={item} />
-              </ListItem>
-              <Divider component="li" />
-            </React.Fragment>
-          ))}
+          {Array.isArray(recommendations) &&
+            recommendations.map((item, index) => (
+              <React.Fragment key={index}>
+                <ListItem>
+                  <ListItemText primary={item} />
+                </ListItem>
+                <Divider component="li" />
+              </React.Fragment>
+            ))}
         </List>
       </CardContent>
     </Card>
   );
 }
+
+// Add PropTypes validation
+Recommendations.propTypes = {
+  recommendations: PropTypes.arrayOf(PropTypes.string).isRequired, // Validate as an array of strings
+};
+
+// Add Default Props
+Recommendations.defaultProps = {
+  recommendations: [], // Default to an empty array
+};
 
 export default Recommendations;

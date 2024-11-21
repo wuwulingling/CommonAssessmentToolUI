@@ -11,8 +11,6 @@ import InterventionPage from "./components/InterventionPage";
 
 import "./App.css";
 
-
-
 function App() {
   return (
     <Router>
@@ -24,8 +22,11 @@ function App() {
             <Route path="/form" element={<FormNew />} />
             <Route path="/results" element={<ResultPage />} />
             <Route path="/clients" element={<ClientSearch />} />
-            <Route path="/client/:id" element={ <DetailPage /> } />
-            <Route path="/interventions/:interventionKey" element={<InterventionPage />} />
+            <Route path="/client/:id" element={<DetailPage />} />
+            <Route
+              path="/interventions/:interventionKey"
+              element={<InterventionPage />}
+            />
           </Routes>
         </main>
         <Footer />

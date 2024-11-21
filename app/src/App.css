@@ -4,29 +4,29 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f4f4f9; 
-  color: #333; 
-  font-family: 'Arial', sans-serif; 
+  background-color: #f4f4f9;
+  color: #333;
+  font-family: "Arial", sans-serif;
 }
 
 .form-container {
   background: white;
   padding: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 80%; 
+  width: 80%;
   max-width: 500px;
 }
 
 .result-container {
   margin-top: 20px;
   padding: 20px;
-  background: #e2e2e2; 
+  background: #e2e2e2;
   border-radius: 8px;
-  width: 80%; 
-  max-width: 500px; 
+  width: 80%;
+  max-width: 500px;
 }
 
 .error-message {
-  color: red; 
+  color: red;
 }
