@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Typography,
   Grid,
@@ -183,9 +183,7 @@ function Form() {
                 <MenuItem value="High School Diploma">
                   High School Diploma
                 </MenuItem>
-                <MenuItem value="Associate's Degree">
-                  Associate's Degree
-                </MenuItem>
+                <MenuItem value="Associate's Degree">Associate's Degree</MenuItem>
                 <MenuItem value="Bachelor's Degree">Bachelor's Degree</MenuItem>
                 <MenuItem value="Master's Degree">Master's Degree</MenuItem>
                 <MenuItem value="Technical Certificate">
