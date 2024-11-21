@@ -34,7 +34,7 @@ jobs:
 
       # Step 5: Run Linters
       - name: Run ESLint
-        run: npm run lint
+        run: npm lint
         env:
           CI: true
 
