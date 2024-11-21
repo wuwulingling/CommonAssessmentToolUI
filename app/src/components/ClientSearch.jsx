@@ -77,9 +77,12 @@ function ClientSearch() {
   const handleSearch = async (query) => {
     try {
       const params = { firstName: query };
-      const response = await axios.get(`http://localhost:3001/api/clients/search`, {
-        params: params,
-      });
+      const response = await axios.get(
+        `http://localhost:3001/api/clients/search`,
+        {
+          params: params,
+        },
+      );
       setClients(response.data);
       setError(null);
     } catch (err) {
@@ -98,18 +101,27 @@ function ClientSearch() {
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       />
-      <Typography variant="h4" align="center" gutterBottom sx={{ marginTop: '40px' }}>
-        Search Results for First Name "{query}"
+      <Typography
+        variant="h4"
+        align="center"
+        gutterBottom
+        sx={{ marginTop: "40px" }}
+      >
+        Search Results for First Name &quot;{query}&quot;
       </Typography>
 
       {error && <div className="error-message">{error}</div>}
-      
+
       <div className="client-grid">
         {clients.length > 0 ? (
           clients.map((client) => {
             const nonDefaultFields = Object.keys(defaultValues)
-              .filter((field) => client[field] !== undefined && client[field] !== defaultValues[field])
-              .slice(0, 4); 
+              .filter(
+                (field) =>
+                  client[field] !== undefined &&
+                  client[field] !== defaultValues[field],
+              )
+              .slice(0, 4);
 
             return (
               <Card
@@ -132,13 +144,25 @@ function ClientSearch() {
                   {nonDefaultFields.slice(0, 4).map((field) => (
                     <Typography key={field} variant="body2">
                       <span className="field-label">{fieldLabels[field]}:</span>
-                      <span className="field-value">{client[field].toString()}</span>
+                      <span className="field-value">
+                        {client[field].toString()}
+                      </span>
                     </Typography>
                   ))}
                 </Box>
                 <Box display="flex" justifyContent="flex-end" mt={1}>
-                  <Typography variant="caption" sx={{ fontSize: '0.75rem', fontStyle: 'italic', color: '#999' }}>
-                    Last Update: {client.last_update ? new Date(client.last_update).toLocaleString() : "No updates yet"}
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontSize: "0.75rem",
+                      fontStyle: "italic",
+                      color: "#999",
+                    }}
+                  >
+                    Last Update:{" "}
+                    {client.last_update
+                      ? new Date(client.last_update).toLocaleString()
+                      : "No updates yet"}
                   </Typography>
                 </Box>
               </Card>
