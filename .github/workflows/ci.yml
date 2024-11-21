@@ -29,7 +29,7 @@ jobs:
 
       # Step 4: Run Linters
       - name: Run ESLint
-        run: npm run eslint 'src/**/*.{js,jsx,ts,tsx}'
+        run: npm run lint
         env:
           CI: true
 
