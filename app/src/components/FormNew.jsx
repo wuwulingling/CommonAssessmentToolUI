@@ -67,7 +67,7 @@ const FormNew = () => {
   }, [location.state]);
 
   // State to hold the entries
-  const [entries, setEntries] = useState([]); // Ensure this is defined
+  const [setEntries] = useState([]); // Ensure this is defined
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

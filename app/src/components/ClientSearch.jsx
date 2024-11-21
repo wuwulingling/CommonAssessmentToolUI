@@ -99,7 +99,7 @@ function ClientSearch() {
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       />
       <Typography variant="h4" align="center" gutterBottom sx={{ marginTop: '40px' }}>
-        Search Results for First Name "{query}"
+        Search Results for First Name &quot;{query}&quot;
       </Typography>
 
       {error && <div className="error-message">{error}</div>}
