@@ -23,38 +23,43 @@ jobs:
         with:
           node-version: 20
 
-      # Step 3: Navigate to app directory
-      - name: Change Directory to /app
-        working-directory: ./app
-        run: echo "Navigated to app directory"
-
-      # Step 4: Install dependencies
+      # Step 3: Navigate to app directory and install dependencies
       - name: Install dependencies
+        working-directory: ./app
         run: npm install
 
-      # Step 5: Run Linters
+      # Step 4: Run Linters
       - name: Run ESLint
-        run: npm lint
+        working-directory: ./app
+        run: npm run lint
         env:
           CI: true
 
-      # Step 6: Run Tests
+      # Step 5: Run Tests
       - name: Run Tests
+        working-directory: ./app
         run: npm test -- --watchAll=false
         env:
           CI: true
 
-      # Step 7: Check for Formatting
+      # Step 6: Check for Formatting
       - name: Run Prettier
+        working-directory: ./app
         run: npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
 
-      # Step 8: Run Type Checking
-      - name: Run TypeScript Check (if applicable)
+      # Step 7: Run Type Checking (if applicable)
+      - name: Run TypeScript Check
+        working-directory: ./app
         run: npx tsc --noEmit
 
       # Optional: Add Logs
       - name: Logs
         run: echo "All checks passed successfully!"
+
+      # Step 8: Report Success
+      - name: Completion
+        run: echo "CI Pipeline Completed Successfully"
+
 
       # Step 9: Report Success
       - name: Completion
