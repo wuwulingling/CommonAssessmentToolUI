@@ -183,9 +183,15 @@ function Form() {
                 <MenuItem value="High School Diploma">
                   High School Diploma
                 </MenuItem>
-                <MenuItem value="Associate&#39;s Degree">Associate&#39;s Degree</MenuItem>
-                <MenuItem value="Bachelor&#39;s Degree">Bachelor&#39;s Degree</MenuItem>
-                <MenuItem value="Master&#39;s Degree">Master&#39;s Degree</MenuItem>
+                <MenuItem value="Associate&#39;s Degree">
+                  Associate&#39;s Degree
+                </MenuItem>
+                <MenuItem value="Bachelor&#39;s Degree">
+                  Bachelor&#39;s Degree
+                </MenuItem>
+                <MenuItem value="Master&#39;s Degree">
+                  Master&#39;s Degree
+                </MenuItem>
                 <MenuItem value="Technical Certificate">
                   Technical Certificate
                 </MenuItem>

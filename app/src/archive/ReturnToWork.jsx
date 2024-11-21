@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types"; 
+import PropTypes from "prop-types";
 import { Card, CardContent, Typography } from "@mui/material";
 
 function ReturnToWork({ returnToWork }) {
@@ -22,7 +22,8 @@ function ReturnToWork({ returnToWork }) {
 }
 
 ReturnToWork.propTypes = {
-  returnToWork: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  returnToWork: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
 };
 
 export default ReturnToWork;

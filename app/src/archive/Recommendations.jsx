@@ -1,6 +1,6 @@
 // Recommendations.js
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 import {
   Card,
   CardContent,
@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
   Divider,
-} from '@mui/material';
+} from "@mui/material";
 
 function Recommendations({ recommendations }) {
   return (

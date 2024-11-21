@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Grid,
   Card,
@@ -11,7 +11,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import axios from 'axios';
+import axios from "axios";
 import styles from "./Form.detail.css";
 
 function Client() {
@@ -84,7 +84,9 @@ function Client() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/client/${id}`);
+        const response = await axios.get(
+          `http://localhost:3001/api/client/${id}`,
+        );
         setSelectedUser(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -104,45 +106,50 @@ function Client() {
   const handleConfirmClick = async (field) => {
     try {
       // Validation for required fields
-      if (field === 'firstName' || field === 'lastName') {
+      if (field === "firstName" || field === "lastName") {
         if (!selectedUser[field].trim()) {
           alert(`${fieldLabels[field]} cannot be empty.`);
           return;
         }
       }
-  
+
       // Validation for age
-      if (field === 'age') {
+      if (field === "age") {
         const age = selectedUser[field];
         if (age < 18 || age > 65) {
-          alert('Age should be between 18 and 65.');
+          alert("Age should be between 18 and 65.");
           return;
         }
       }
-  
+
       // If validation passes, proceed with the update
       const currentTimestamp = new Date().toISOString(); // Get current time in ISO format
-      const updatedData = { 
+      const updatedData = {
         [field]: selectedUser[field],
         last_update: currentTimestamp, // Update last_update field
       };
-  
-      await axios.put(`http://localhost:3001/api/update-user/${id}`, updatedData);
-  
+
+      await axios.put(
+        `http://localhost:3001/api/update-user/${id}`,
+        updatedData,
+      );
+
       setSelectedUser((prevUser) => ({
         ...prevUser,
         last_update: currentTimestamp, // Update state with the new timestamp
       }));
-  
+
       setEditMode((prev) => ({
         ...prev,
         [field]: false,
       }));
-  
-      alert(`${fieldLabels[field]} updated successfully! Last update: ${new Date(currentTimestamp).toLocaleString()}`);
+
+      alert(
+        `${fieldLabels[field]} updated successfully! Last update: ${new Date(currentTimestamp).toLocaleString()}`,
+      );
     } catch (error) {
       console.error("Error updating user data:", error);
-      alert('Failed to update user.');
+      alert("Failed to update user.");
     }
   };
 
@@ -150,51 +157,73 @@ function Client() {
     const { name, value, type, checked } = e.target;
     setSelectedUser({
       ...selectedUser,
-      [name]: type === 'checkbox' ? (checked ? "true" : "false") : value,
+      [name]: type === "checkbox" ? (checked ? "true" : "false") : value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const unconfirmedFields = Object.keys(editMode).filter((field) => editMode[field]);
+    const unconfirmedFields = Object.keys(editMode).filter(
+      (field) => editMode[field],
+    );
     if (unconfirmedFields.length > 0) {
-      const unconfirmedFieldLabels = unconfirmedFields.map(field => `"${fieldLabels[field]}" Field`);
+      const unconfirmedFieldLabels = unconfirmedFields.map(
+        (field) => `"${fieldLabels[field]}" Field`,
+      );
       alert(`${unconfirmedFieldLabels.join(", ")} edit not confirmed.`);
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/work-score', selectedUser);
+      const response = await axios.post(
+        "http://localhost:3001/api/work-score",
+        selectedUser,
+      );
 
       const probability = response.data.baseline;
       const interventions = response.data.interventions;
 
-      navigate("/results", { state: { id, selectedUser, probability, interventions } });
+      navigate("/results", {
+        state: { id, selectedUser, probability, interventions },
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  const renderEditableField = (fieldName, label, type = "text", selectOptions = null) => (
+  const renderEditableField = (
+    fieldName,
+    label,
+    type = "text",
+    selectOptions = null,
+  ) => (
     <Grid item xs={12} sm={6} key={fieldName}>
       <div className={`${styles.inputContainer} input-container`}>
         <div className={`${styles.labelContainer} label-container`}>
-          <Typography variant="subtitle1" style={{ color: '#666', fontWeight: 500 }}>
+          <Typography
+            variant="subtitle1"
+            style={{ color: "#666", fontWeight: 500 }}
+          >
             {label}
           </Typography>
           {!editMode[fieldName] && (
-            <IconButton onClick={() => handleEditClick(fieldName)} size="small" className={styles.editIconButton}>
+            <IconButton
+              onClick={() => handleEditClick(fieldName)}
+              size="small"
+              className={styles.editIconButton}
+            >
               <i className="fas fa-edit edit-icon" />
             </IconButton>
           )}
         </div>
         {!editMode[fieldName] ? (
-          <Typography variant="body1">
-            {selectedUser[fieldName]}
-          </Typography>
+          <Typography variant="body1">{selectedUser[fieldName]}</Typography>
         ) : (
-          <Box className={styles.editFieldContainer} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box
+            className={styles.editFieldContainer}
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
             {type === "boolean" ? (
               <FormControl className={styles.booleanDropdown}>
                 <Select
@@ -229,7 +258,11 @@ function Client() {
                 className={styles.editInputField}
               />
             )}
-            <IconButton onClick={() => handleConfirmClick(fieldName)} size="small" className={styles.confirmIconButton}>
+            <IconButton
+              onClick={() => handleConfirmClick(fieldName)}
+              size="small"
+              className={styles.confirmIconButton}
+            >
               <i className="fas fa-check confirm-icon" />
             </IconButton>
           </Box>
@@ -239,27 +272,39 @@ function Client() {
   );
 
   return (
-    <Box sx={{ width: 800, margin: '50px auto' }}>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <Box sx={{ width: 800, margin: "50px auto" }}>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      />
       <Card className={styles.card}>
-        <Typography variant="h4" component="h2" gutterBottom className="form-title">
+        <Typography
+          variant="h4"
+          component="h2"
+          gutterBottom
+          className="form-title"
+        >
           Client Detail
         </Typography>
 
-        <Typography 
-          variant="subtitle2" 
-          color="textSecondary" 
-          sx={{ 
-            mb: 2, 
-            textAlign: 'right', 
-            marginRight: 3  // Add right margin
+        <Typography
+          variant="subtitle2"
+          color="textSecondary"
+          sx={{
+            mb: 2,
+            textAlign: "right",
+            marginRight: 3, // Add right margin
           }}
         >
-          Last Update: {selectedUser.last_update ? new Date(selectedUser.last_update).toLocaleString() : "No updates yet"}
+          Last Update:{" "}
+          {selectedUser.last_update
+            ? new Date(selectedUser.last_update).toLocaleString()
+            : "No updates yet"}
         </Typography>
 
-          
-        <div className={`${styles.sectionTitle} section-title`}>Personal Info</div>
+        <div className={`${styles.sectionTitle} section-title`}>
+          Personal Info
+        </div>
         <Grid container spacing={3}>
           {renderEditableField("firstName", "First Name")}
           {renderEditableField("lastName", "Last Name")}
@@ -271,15 +316,31 @@ function Client() {
           ])}
           {renderEditableField("dep_num", "Number of Dependents", "number")}
         </Grid>
-        <div className={`${styles.sectionTitle} section-title`}>Work Experience</div>
+        <div className={`${styles.sectionTitle} section-title`}>
+          Work Experience
+        </div>
         <Grid container spacing={4}>
           {renderEditableField("work_experience", "Work Experience", "number")}
-          {renderEditableField("canada_workex", "Canada Work Experience", "number")}
-          {renderEditableField("currently_employed", "Currently Employed", "boolean")}
-          {renderEditableField("time_unemployed", "Time Unemployed (months)", "number")}
+          {renderEditableField(
+            "canada_workex",
+            "Canada Work Experience",
+            "number",
+          )}
+          {renderEditableField(
+            "currently_employed",
+            "Currently Employed",
+            "boolean",
+          )}
+          {renderEditableField(
+            "time_unemployed",
+            "Time Unemployed (months)",
+            "number",
+          )}
         </Grid>
 
-        <div className={`${styles.sectionTitle} section-title`}>Citizenship</div>
+        <div className={`${styles.sectionTitle} section-title`}>
+          Citizenship
+        </div>
         <Grid container spacing={4}>
           {renderEditableField("citizen_status", "Citizen Status", "text", [
             { value: "", label: "None" },
@@ -292,26 +353,62 @@ function Client() {
 
         <div className={`${styles.sectionTitle} section-title`}>Education</div>
         <Grid container spacing={4}>
-          {renderEditableField("attending_school", "Attending School", "boolean")}
-          {renderEditableField("fluent_english", "Fluent in English", "boolean")}
-          {renderEditableField("level_of_schooling", "Level of Schooling", "text", [
-            { value: "Grade 0-8", label: "Grade 0-8" },
-            { value: "Grade 9", label: "Grade 9" },
-            { value: "Grade 10", label: "Grade 10" },
-            { value: "Grade 11", label: "Grade 11" },
-            { value: "Grade 12 or equivalent", label: "Grade 12 or equivalent" },
-            { value: "Some college", label: "Some college" },
-            { value: "Bachelor’s degree", label: "Bachelor’s degree" },
-            { value: "Post graduate", label: "Post graduate" },
-          ])}
-          {renderEditableField("reading_english_scale", "Reading English Scale (0-10)", "number")}
-          {renderEditableField("speaking_english_scale", "Speaking English Scale (0-10)", "number")}
-          {renderEditableField("writing_english_scale", "Writing English Scale (0-10)", "number")}
-          {renderEditableField("numeracy_scale", "Numeracy Scale (0-10)", "number")}
-          {renderEditableField("computer_scale", "Computer Scale (0-10)", "number")}
+          {renderEditableField(
+            "attending_school",
+            "Attending School",
+            "boolean",
+          )}
+          {renderEditableField(
+            "fluent_english",
+            "Fluent in English",
+            "boolean",
+          )}
+          {renderEditableField(
+            "level_of_schooling",
+            "Level of Schooling",
+            "text",
+            [
+              { value: "Grade 0-8", label: "Grade 0-8" },
+              { value: "Grade 9", label: "Grade 9" },
+              { value: "Grade 10", label: "Grade 10" },
+              { value: "Grade 11", label: "Grade 11" },
+              {
+                value: "Grade 12 or equivalent",
+                label: "Grade 12 or equivalent",
+              },
+              { value: "Some college", label: "Some college" },
+              { value: "Bachelor’s degree", label: "Bachelor’s degree" },
+              { value: "Post graduate", label: "Post graduate" },
+            ],
+          )}
+          {renderEditableField(
+            "reading_english_scale",
+            "Reading English Scale (0-10)",
+            "number",
+          )}
+          {renderEditableField(
+            "speaking_english_scale",
+            "Speaking English Scale (0-10)",
+            "number",
+          )}
+          {renderEditableField(
+            "writing_english_scale",
+            "Writing English Scale (0-10)",
+            "number",
+          )}
+          {renderEditableField(
+            "numeracy_scale",
+            "Numeracy Scale (0-10)",
+            "number",
+          )}
+          {renderEditableField(
+            "computer_scale",
+            "Computer Scale (0-10)",
+            "number",
+          )}
         </Grid>
 
-        <div className={`${styles.sectionTitle} section-title`} >Other</div>
+        <div className={`${styles.sectionTitle} section-title`}>Other</div>
         <Grid container spacing={4} sx={{ paddingBottom: 3 }}>
           {renderEditableField("housing", "Housing", "text", [
             { value: "Renting-private", label: "Renting-private" },
@@ -322,26 +419,37 @@ function Client() {
           {renderEditableField("income_source", "Source of Income", "text", [
             { value: "Employment", label: "Employment" },
             { value: "Self-Employment", label: "Self-Employment" },
-            { value: "Ontario Works applied or receiving", label: "Ontario Works applied or receiving" },
+            {
+              value: "Ontario Works applied or receiving",
+              label: "Ontario Works applied or receiving",
+            },
           ])}
-          {renderEditableField("transportation_bool", "Has Transportation", "boolean")}
+          {renderEditableField(
+            "transportation_bool",
+            "Has Transportation",
+            "boolean",
+          )}
           {renderEditableField("caregiver_bool", "Is a Caregiver", "boolean")}
           {renderEditableField("felony_bool", "Has Felony", "boolean")}
           {renderEditableField("substance_use", "Substance Use", "boolean")}
-          {renderEditableField("need_mental_health_support_bool", "Needs Mental Health Support", "boolean")}
+          {renderEditableField(
+            "need_mental_health_support_bool",
+            "Needs Mental Health Support",
+            "boolean",
+          )}
         </Grid>
       </Card>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 3 }}>
         <Button
           type="submit"
           variant="contained"
           color="secondary"
           onClick={handleSubmit}
           sx={{
-            minWidth: '200px',
-            height: '60px',
-            fontSize: '1rem',
+            minWidth: "200px",
+            height: "60px",
+            fontSize: "1rem",
           }}
         >
           See your score
@@ -352,9 +460,6 @@ function Client() {
 }
 
 export default Client;
-
-
-
 
 // import React, { useState, useEffect } from 'react';
 // import { useNavigate, useParams } from 'react-router-dom';
@@ -377,7 +482,7 @@ export default Client;
 //   const navigate = useNavigate();
 //   const { id } = useParams();
 //   const [open, setOpen] = useState(true);
-  
+
 //   // Map of field names to their labels
 //   const fieldLabels = {
 //     firstName: "First Name",
@@ -581,7 +686,7 @@ export default Client;
 //         >
 //           Client Detail
 //         </Typography>
-          
+
 //         <div className={`${styles.sectionTitle} section-title`}>Personal Info</div>
 //         <Grid container spacing={3}>
 //           {renderEditableField("firstName", "First Name")}
@@ -663,9 +768,9 @@ export default Client;
 //           color="secondary"
 //           onClick={handleSubmit}
 //           sx={{
-//             minWidth: '200px', 
-//             height: '60px',  
-//             fontSize: '1rem' 
+//             minWidth: '200px',
+//             height: '60px',
+//             fontSize: '1rem'
 //           }}
 //         >
 //           See your score

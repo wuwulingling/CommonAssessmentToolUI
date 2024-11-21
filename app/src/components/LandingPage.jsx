@@ -62,7 +62,8 @@ function LandingPage() {
             color: "#34495e",
           }}
         >
-          Learn more about the candidate&apos;s employment potential and intervention recommendations
+          Learn more about the candidate&apos;s employment potential and
+          intervention recommendations
         </Typography>
         <Stack direction="row" spacing={4} justifyContent="center">
           <Button

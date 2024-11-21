@@ -45,7 +45,7 @@ jobs:
       # Step 6: Check for Formatting
       - name: Run Prettier
         working-directory: ./app
-        run: npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,scss,md}"
+        run: npx prettier --check "./**/*.{js,jsx,ts,tsx,json,css,scss,md}"
 
       # Step 7: Run Type Checking (if applicable)
       - name: Run TypeScript Check
