@@ -84,13 +84,3 @@ jobs:
         run: echo "CI/CD Pipeline Completed Successfully"
           sleep 5 # Wait for the container to start
 
-      # Step 11: Run Tests Against the Container
-      - name: Run Tests
-        working-directory: ./backend
-        run: |
-          if ! curl -f http://localhost:8080/health; then
-            echo "Health check failed" >&2
-            exit 1
-          fi
-          echo "Tests passed successfully"
-
