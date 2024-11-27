@@ -1,0 +1,61 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Switch to Ubuntu runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ./app
+        run: npm install
+
+      - name: Run ESLint
+        working-directory: ./app
+        run: npm run lint
+        env:
+          CI: true
+
+      - name: Run Prettier
+        working-directory: ./app
+        run: npx prettier --check "./**/*.{js,jsx,ts,tsx,json,css,scss,md}"
+
+      - name: Build Docker Image
+        working-directory: ./backend
+        run: docker build -t local-backend:${{ github.sha }} .
+
+      - name: Run Docker Container
+        working-directory: ./backend
+        run: |
+          docker run --name backend-container -d -p 8080:8080 local-backend:${{ github.sha }}
+          sleep 5
+
+      - name: Run Tests
+        working-directory: ./backend
+        run: |
+          curl -f http://localhost:8080/health || exit 1
+          echo "Tests passed successfully"
+
+      - name: Cleanup Docker
+        run: |
+          docker stop backend-container
+          docker rm backend-container
+          docker rmi local-backend:${{ github.sha }}
+
+      - name: Completion
+        run: echo "CI/CD Pipeline Completed Successfully"
