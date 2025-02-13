@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+
 import {
   Typography,
   Grid,
@@ -18,7 +19,9 @@ import styles from "./Form.module.css";
 const FormNew = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [formData, setFormData] = useState({
+  const [selectedUser, setSelectedUser] = useState({
+    firstName: "",
+    lastName: "",
     age: 0,
     gender: "",
     work_experience: 0,
@@ -44,44 +47,110 @@ const FormNew = () => {
     time_unemployed: 0,
     need_mental_health_support_bool: "false",
   });
+  // http://ec2-34-219-155-200.us-west-2.compute.amazonaws.com:8000/clients/predictions
+  // this can be changed to an env variable
+  const workscore_api = "http://localhost:3001/api/work-score";
+
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    age: "",
+  });
 
   useEffect(() => {
     // If there's form data in the location state, use it to initialize the form
-    if (location.state && location.state.formData) {
-      setFormData(location.state.formData);
+    if (location.state && location.state.selectedUser) {
+      setSelectedUser(location.state.selectedUser);
     }
   }, [location.state]);
 
+  // State to hold the entries
+  const [setEntries] = useState([]); // Ensure this is defined
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setSelectedUser({
+      ...selectedUser,
       [name]: type === "checkbox" ? (checked ? "true" : "false") : value,
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    let isValid = true;
+
+    if (!selectedUser.firstName.trim()) {
+      newErrors.firstName = "First Name is required.";
+      isValid = false;
+    }
+
+    if (!selectedUser.lastName.trim()) {
+      newErrors.lastName = "Last Name is required.";
+      isValid = false;
+    }
+
+    if (selectedUser.age <= 0) {
+      newErrors.age = "Age is required.";
+      isValid = false;
+    }
+
+    if (!Number.isInteger(Number(selectedUser.age))) {
+      newErrors.age = "Age must be a valid number.";
+      isValid = false;
+    }
+
+    if (
+      (selectedUser.age > 0 && selectedUser.age < 18) ||
+      selectedUser.age > 66
+    ) {
+      newErrors.age = "Age must be between 18 and 65.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Prevent form submission if validation fails
     try {
-      // TODO: change url to use an env variable to make it easier to change when deploying in different environments
-      const response = await axios.post(
-        "http://ec2-34-219-155-200.us-west-2.compute.amazonaws.com:8000/clients/predictions",
-        formData
-      );
-      console.log(response);
-      console.log(response.data);
-
+      await handleAdd();
+      const response = await axios.post(workscore_api, selectedUser);
       const probability = response.data.baseline;
 
       const interventions = response.data.interventions;
-      navigate("/results", { state: { formData, probability, interventions } });
+      navigate("/results", {
+        state: { selectedUser, probability, interventions },
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
+  const handleAdd = async () => {
+    try {
+      // Send formData to the backend at the new endpoint
+      const response = await axios.post(
+        "http://localhost:3001/api/submit-form", // Update the URL as needed
+        selectedUser,
+      );
+
+      // Assuming the response contains the newly added submission or confirmation
+      console.log(response.data);
+
+      // Update the entries state with the new submission
+      setEntries((prevEntries) => [...prevEntries, response.data.submission]);
+      handleClearForm(); // Optionally clear the form after adding
+    } catch (error) {
+      console.error("Error adding entry:", error);
+    }
+  };
+
   const handleClearForm = () => {
-    setFormData({
+    setSelectedUser({
+      firstName: "",
+      lastName: "",
       age: 0,
       gender: "",
       work_experience: 0,
@@ -121,16 +190,44 @@ const FormNew = () => {
           Candidate Form
         </Typography>
         <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="First Name"
+              type="text"
+              name="firstName"
+              value={selectedUser.firstName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              error={!!errors.firstName}
+              helperText={errors.firstName}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Last Name"
+              type="text"
+              name="lastName"
+              value={selectedUser.lastName}
+              onChange={handleChange}
+              variant="outlined"
+              fullWidth
+              error={!!errors.lastName}
+              helperText={errors.lastName}
+            />
+          </Grid>
           <Grid item xs={12} sm={3}>
             <TextField
               label="Age"
               type="number"
               name="age"
-              value={formData.age}
+              value={selectedUser.age}
               onChange={handleChange}
               variant="outlined"
               fullWidth
-              InputProps={{ inputProps: { min: 18, max: 65 } }}
+              //InputProps={{ inputProps: { min: 18, max: 65 } }}
+              error={!!errors.age}
+              helperText={errors.age}
             />
           </Grid>
           <Grid item xs={12} sm={3}>
@@ -138,7 +235,7 @@ const FormNew = () => {
               <InputLabel>Gender</InputLabel>
               <Select
                 name="gender"
-                value={formData.gender}
+                value={selectedUser.gender}
                 label="Gender"
                 onChange={handleChange}
               >
@@ -156,7 +253,7 @@ const FormNew = () => {
               label="Work Experience (years)"
               name="work_experience"
               type="number"
-              value={formData.work_experience}
+              value={selectedUser.work_experience}
               onChange={handleChange}
               className={styles.formField}
             />
@@ -167,7 +264,7 @@ const FormNew = () => {
               label="Canadian Work Experience (years)"
               name="canada_workex"
               type="number"
-              value={formData.canada_workex}
+              value={selectedUser.canada_workex}
               onChange={handleChange}
               className={styles.formField}
             />
@@ -178,7 +275,7 @@ const FormNew = () => {
               label="Number of Dependents"
               name="dep_num"
               type="number"
-              value={formData.dep_num}
+              value={selectedUser.dep_num}
               onChange={handleChange}
             />
           </Grid>
@@ -187,7 +284,7 @@ const FormNew = () => {
               <InputLabel>Citizen Status</InputLabel>
               <Select
                 name="citizen_status"
-                value={formData.citizen_status}
+                value={selectedUser.citizen_status}
                 onChange={handleChange}
                 label="Citizen Status"
               >
@@ -208,7 +305,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.canada_born === "true"}
+                  checked={selectedUser.canada_born === "true"}
                   onChange={handleChange}
                   name="canada_born"
                 />
@@ -222,7 +319,7 @@ const FormNew = () => {
               <InputLabel>Level of Schooling</InputLabel>
               <Select
                 name="level_of_schooling"
-                value={formData.level_of_schooling}
+                value={selectedUser.level_of_schooling}
                 onChange={handleChange}
                 label="Level of Schooling"
               >
@@ -256,7 +353,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.attending_school === "true"}
+                  checked={selectedUser.attending_school === "true"}
                   onChange={handleChange}
                   name="attending_school"
                 />
@@ -268,7 +365,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.fluent_english === "true"}
+                  checked={selectedUser.fluent_english === "true"}
                   onChange={handleChange}
                   name="fluent_english"
                 />
@@ -280,7 +377,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.currently_employed === "true"}
+                  checked={selectedUser.currently_employed === "true"}
                   onChange={handleChange}
                   name="currently_employed"
                 />
@@ -295,7 +392,7 @@ const FormNew = () => {
               label="Time Unemployed (months)"
               name="time_unemployed"
               type="number"
-              value={formData.time_unemployed}
+              value={selectedUser.time_unemployed}
               onChange={handleChange}
             />
           </Grid>
@@ -303,7 +400,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.transportation_bool === "true"}
+                  checked={selectedUser.transportation_bool === "true"}
                   onChange={handleChange}
                   name="transportation_bool"
                 />
@@ -315,7 +412,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.caregiver_bool === "true"}
+                  checked={selectedUser.caregiver_bool === "true"}
                   onChange={handleChange}
                   name="caregiver_bool"
                 />
@@ -329,7 +426,7 @@ const FormNew = () => {
               <Select
                 name="housing"
                 label="housing"
-                value={formData.housing}
+                value={selectedUser.housing}
                 onChange={handleChange}
               >
                 <MenuItem value="Renting-private">Renting-private</MenuItem>
@@ -361,7 +458,7 @@ const FormNew = () => {
               <Select
                 name="income_source"
                 label="Source of Income"
-                value={formData.income_source}
+                value={selectedUser.income_source}
                 onChange={handleChange}
               >
                 <MenuItem value="No Source of Income">
@@ -394,7 +491,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.felony_bool === "true"}
+                  checked={selectedUser.felony_bool === "true"}
                   onChange={handleChange}
                   name="felony_bool"
                 />
@@ -406,7 +503,7 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.substance_use === "true"}
+                  checked={selectedUser.substance_use === "true"}
                   onChange={handleChange}
                   name="substance_use"
                 />
@@ -418,7 +515,9 @@ const FormNew = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={formData.need_mental_health_support_bool === "true"}
+                  checked={
+                    selectedUser.need_mental_health_support_bool === "true"
+                  }
                   onChange={handleChange}
                   name="need_mental_health_support_bool"
                   className={styles.checkbox}
@@ -434,7 +533,7 @@ const FormNew = () => {
               label="Reading English Scale (0-10)"
               name="reading_english_scale"
               type="number"
-              value={formData.reading_english_scale}
+              value={selectedUser.reading_english_scale}
               onChange={handleChange}
               InputProps={{ inputProps: { min: 0, max: 10 } }}
             />
@@ -445,7 +544,7 @@ const FormNew = () => {
               label="Speaking English Scale (0-10)"
               name="speaking_english_scale"
               type="number"
-              value={formData.speaking_english_scale}
+              value={selectedUser.speaking_english_scale}
               onChange={handleChange}
               InputProps={{ inputProps: { min: 0, max: 10 } }}
             />
@@ -456,7 +555,7 @@ const FormNew = () => {
               label="Writing English Scale (0-10)"
               name="writing_english_scale"
               type="number"
-              value={formData.writing_english_scale}
+              value={selectedUser.writing_english_scale}
               onChange={handleChange}
               InputProps={{ inputProps: { min: 0, max: 10 } }}
             />
@@ -467,7 +566,7 @@ const FormNew = () => {
               label="Numeracy Scale (0-10)"
               name="numeracy_scale"
               type="number"
-              value={formData.numeracy_scale}
+              value={selectedUser.numeracy_scale}
               onChange={handleChange}
               InputProps={{ inputProps: { min: 0, max: 10 } }}
             />
@@ -478,7 +577,7 @@ const FormNew = () => {
               label="Computer Scale (0-10)"
               name="computer_scale"
               type="number"
-              value={formData.computer_scale}
+              value={selectedUser.computer_scale}
               onChange={handleChange}
               InputProps={{ inputProps: { min: 0, max: 10 } }}
             />
